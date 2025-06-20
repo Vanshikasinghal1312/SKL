@@ -58,7 +58,7 @@ export default function HomeScreen() {
   const pickLicenseFile = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: '/',
+        type: '*/*',
         multiple: false,
       })
       if (result.assets != null) {
@@ -72,7 +72,7 @@ export default function HomeScreen() {
   const pickAadharFile = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: '/',
+        type: '*/*',
         multiple: false,
       })
       if (result.assets != null) {
@@ -189,7 +189,7 @@ export default function HomeScreen() {
               <Text style={{ borderWidth: 1, height: 35, fontWeight: '700', paddingRight: 10, backgroundColor: 'lightgrey', paddingVertical: 5, paddingLeft: 2, marginVertical: 2 }}>Choose File</Text>
             </Pressable>
             <Text style={{ marginLeft: 10, alignSelf: 'center' }}>{licenseFile}</Text>
-            {licenseFile != "No File Chosen" && <TouchableOpacity onPress={() => setLicenseFile('No File Chosen')}><Text style={{ color: 'red', marginLeft: 10, marginVertical: 10 }}>Remove</Text></TouchableOpacity>}
+            {licenseFile != "No File Chosen" && <TouchableOpacity onPress={() => setLicenseFile('No File Chosen')}><Text style={{ color: 'red', marginLeft: 10, marginVertical: 10 }}>✕</Text></TouchableOpacity>}
           </View>
 
           <Text style={{ fontWeight: '700', fontSize: 16 }}>Aadhar Upload</Text>
@@ -198,7 +198,7 @@ export default function HomeScreen() {
               <Text style={{ borderWidth: 1, height: 35, fontWeight: '700', paddingRight: 10, backgroundColor: 'lightgrey', paddingVertical: 5, paddingLeft: 2, marginVertical: 2 }}>Choose File</Text>
             </Pressable>
             <Text style={{ marginLeft: 10, alignSelf: 'center' }}>{aadharFile}</Text>
-            {aadharFile != "No File Chosen" && <TouchableOpacity onPress={() => setAadharFile('No File Chosen')}><Text style={{ color: 'red', marginLeft: 10, marginVertical: 10 }}>Remove</Text></TouchableOpacity>}
+            {aadharFile != "No File Chosen" && <TouchableOpacity onPress={() => setAadharFile('No File Chosen')}><Text style={{ color: 'red', marginLeft: 10, marginVertical: 10 }}>✕</Text></TouchableOpacity>}
           </View>
 
           <Pressable onPress={handleSubmit}>
