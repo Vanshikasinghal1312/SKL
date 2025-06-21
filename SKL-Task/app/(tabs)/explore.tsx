@@ -1,142 +1,314 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
+import moment from 'moment';
 import React, { useState } from 'react';
-import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { Provider as PaperProvider, Text as T } from 'react-native-paper';
 
 const TabTwoScreen = () => {
-  const [searchField, setSearchField] = useState('');
+
+  const [dropdownValue, setDropdownValue] = useState('');
   const [searchText, setSearchText] = useState('');
-  const [fromDate, setFromDate] = useState<Date | null>(null);
-  const [toDate, setToDate] = useState<Date | null>(null);
-  const [showFromPicker, setShowFromPicker] = useState(false);
-  const [showToPicker, setShowToPicker] = useState(false);
+  const [isFromPickerVisible, setIsFromPickerVisible] = useState(false)
+  const [isToPickerVisible, setIsToPickerVisible] = useState(false)
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+  const [fromTosearch, setFromToSearch] = useState(false);
 
-  const formatDate = (date: Date) => {
-    if (!date) return 'dd-mm-yyyy';
-    return new Intl.DateTimeFormat('en-GB').format(date); // dd-mm-yyyy
-  };
-
-  const sectionData = [
+  const tableData = [
     {
-      title: "Driver Name",
-      data: ["Jitendar Malviya", "FARMAAN", "BALVEER SINGH", "GOVIND MOPGAR"]
+      driverName: 'Rajesh Kumar',
+      mobileNumber: '9876543210',
+      licenseNumber: 'DL1234567890',
+      licenseExpiry: '2026-08-15',
+      licenseUpload: 'license_rajesh.pdf',
+      aadharUpload: 'aadhar_rajesh.pdf',
     },
     {
-      title: "Mobile Number",
-      data: ["8770868609", "9166432034", "9929868036", "9867211176"]
+      driverName: 'Sunita Sharma',
+      mobileNumber: '9123456789',
+      licenseNumber: 'MH0987654321',
+      licenseExpiry: '2025-12-31',
+      licenseUpload: 'license_sunita.jpg',
+      aadharUpload: 'aadhar_sunita.jpg',
     },
     {
-      title: "License Number",
-      data: ["MP04R20200262329", "RJ3620120049323", "RJ3620130050997", "MH0320080039075"]
+      driverName: 'Amit Verma',
+      mobileNumber: '9988776655',
+      licenseNumber: 'KA5678123456',
+      licenseExpiry: '2027-04-20',
+      licenseUpload: 'license_amit.png',
+      aadharUpload: 'aadhar_amit.pdf',
     },
     {
-      title: "License Expiry Date",
-      data: ["2030-03-28", "2032-10-24", "2033-03-07", "2029-12-17"]
+      driverName: 'Priya Singh',
+      mobileNumber: '9090909090',
+      licenseNumber: 'TN4455667788',
+      licenseExpiry: '2024-11-10',
+      licenseUpload: 'license_priya.pdf',
+      aadharUpload: 'aadhar_priya.pdf',
     },
     {
-      title: "License Upload",
-      data: [...Array(4)].map((_, i) => `../UPLOADS/DRIVERS/${1750054175 + i * 2}_WHATSAPP_IMAGE.jpeg`)
+      driverName: 'Vikram Chauhan',
+      mobileNumber: '9811122233',
+      licenseNumber: 'GJ1122334455',
+      licenseExpiry: '2028-01-05',
+      licenseUpload: 'license_vikram.jpeg',
+      aadharUpload: 'aadhar_vikram.jpeg',
     },
     {
-      title: "Aadhar Upload",
-      data: new Array(4).fill("").map((_, i) => `../UPLOADS/DRIVERS/${1750060278 + i}_WHATSAPP_IMAGE.jpeg`)
+      driverName: 'Neha Yadav',
+      mobileNumber: '9345678910',
+      licenseNumber: 'RJ9988776655',
+      licenseExpiry: '2025-07-19',
+      licenseUpload: 'license_neha.png',
+      aadharUpload: 'aadhar_neha.jpg',
     },
     {
-      title: "Action",
-      data: Array.from({ length: 4 }, (_) => "View Docs")
-    }
+      driverName: 'Arjun Mehra',
+      mobileNumber: '8800556677',
+      licenseNumber: 'HR1234987654',
+      licenseExpiry: '2026-03-30',
+      licenseUpload: 'license_arjun.pdf',
+      aadharUpload: 'aadhar_arjun.pdf',
+    },
+    {
+      driverName: 'Kavita Nair',
+      mobileNumber: '7890123456',
+      licenseNumber: 'KL5566778899',
+      licenseExpiry: '2024-09-12',
+      licenseUpload: 'license_kavita.jpg',
+      aadharUpload: 'aadhar_kavita.jpg',
+    },
+    {
+      driverName: 'Ramesh Patel',
+      mobileNumber: '9753108642',
+      licenseNumber: 'GJ9080706050',
+      licenseExpiry: '2027-10-08',
+      licenseUpload: 'license_ramesh.pdf',
+      aadharUpload: 'aadhar_ramesh.pdf',
+    },
+    {
+      driverName: 'Anjali Gupta',
+      mobileNumber: '8888888888',
+      licenseNumber: 'MP1212121212',
+      licenseExpiry: '2026-02-17',
+      licenseUpload: 'license_anjali.pdf',
+      aadharUpload: 'aadhar_anjali.pdf',
+    },
+    {
+      driverName: 'Suresh Raina',
+      mobileNumber: '7777777777',
+      licenseNumber: 'UP3434343434',
+      licenseExpiry: '2029-05-01',
+      licenseUpload: 'license_suresh.jpg',
+      aadharUpload: 'aadhar_suresh.jpg',
+    },
+    {
+      driverName: 'Meena Rathi',
+      mobileNumber: '9663322110',
+      licenseNumber: 'PB2323232323',
+      licenseExpiry: '2025-08-21',
+      licenseUpload: 'license_meena.jpeg',
+      aadharUpload: 'aadhar_meena.jpeg',
+    },
+    {
+      driverName: 'Mohit Sharma',
+      mobileNumber: '9432109876',
+      licenseNumber: 'BR1111222233',
+      licenseExpiry: '2026-06-10',
+      licenseUpload: 'license_mohit.png',
+      aadharUpload: 'aadhar_mohit.png',
+    },
+    {
+      driverName: 'Sneha Joshi',
+      mobileNumber: '9123901283',
+      licenseNumber: 'CH5566443322',
+      licenseExpiry: '2024-12-25',
+      licenseUpload: 'license_sneha.pdf',
+      aadharUpload: 'aadhar_sneha.pdf',
+    },
+    {
+      driverName: 'Gaurav Thakur',
+      mobileNumber: '9091987876',
+      licenseNumber: 'JH1234432112',
+      licenseExpiry: '2027-07-07',
+      licenseUpload: 'license_gaurav.jpg',
+      aadharUpload: 'aadhar_gaurav.jpg',
+    },
   ];
 
+  const filteredData = tableData.filter(item => {
+    if(dropdownValue == 'name') {
+      return item.driverName.toLowerCase().includes(searchText.toLowerCase())
+    } else if(dropdownValue == 'mobile') {
+      return item.mobileNumber.includes(searchText)
+    } else if(dropdownValue == 'license') {
+      return item.licenseNumber.toLowerCase().includes(searchText.toLowerCase())
+    } else if(fromTosearch && fromDate && toDate) {
+      console.log("fromDate",fromDate)
+      console.log("toDate",toDate)
+      console.log("item.licenseExpiry",item.licenseExpiry)
+      return moment(item.licenseExpiry).format('DD-MM-YYYY') >= fromDate && item.licenseExpiry <= toDate
+    } else if(dropdownValue == '' && searchText == '') {
+      return item
+    } 
+  })
+
+  const showFromPicker = () => {
+    setIsFromPickerVisible(true)
+  }
+
+  const hideFromPicker = () => {
+    setIsFromPickerVisible(false)
+  }
+
+  const handleFromPickerConfirm = (date: Date) => {
+    const formatted = moment(date).format('DD-MM-YYYY');
+    setFromDate(formatted)
+    hideFromPicker()
+  }
+
+  const showToPicker = () => {
+    setIsToPickerVisible(true)
+  }
+
+  const hideToPicker = () => {
+    setIsToPickerVisible(false)
+  }
+
+  const handleToPickerConfirm = (date: Date) => {
+    const formatted = moment(date).format('DD-MM-YYYY');
+    if(formatted < fromDate) {
+      Alert.alert('Invalid Date', '"To Date" must be after "From Date"');
+      setToDate(moment().format('DD-MM-YYYY'))
+    } else {
+      setToDate(formatted)
+    }
+    setDropdownValue("")
+    hideToPicker()
+  }
+
+  const handleSearchInput = (text: string) => {
+    setSearchText(text)
+  }
+
+  const handleFromToSearch = () => {
+    if(!fromDate || !toDate) {
+      Alert.alert("Date Range Issue", "Please select license date range!")
+    }
+    setFromToSearch(true)
+  }
+
   return (
-    <View style={styles.container}>
-      <View style={styles.row}>
-        <View style={styles.dropdown}>
+    <PaperProvider>
+      <View style={styles.container}>
+
+        <View style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 5, overflow: 'hidden' }}>
           <Picker
-            mode={'dropdown'}
-            selectedValue={searchField}
-            onValueChange={(itemValue) => setSearchField(itemValue)}
+            mode='dropdown'
+            selectedValue={dropdownValue}
+            onValueChange={(value) => {setDropdownValue(value); setSearchText(''); setFromDate(''); setToDate('');}}
           >
-            <Picker.Item label="Select" value="" />
-            <Picker.Item label="apple" value="a" />
-            <Picker.Item label="banana" value="b" />
-            <Picker.Item label="orange" value="c" />
-            <Picker.Item label="mango" value="d" />
-            <Picker.Item label="grape" value="e" />
+            <Picker.Item label='Select' value="" />
+            <Picker.Item label='Driver Name' value="name" />
+            <Picker.Item label='Mobile Number' value="mobile" />
+            <Picker.Item label='License Number' value="license" />
           </Picker>
         </View>
 
 
         <TextInput
-          placeholder="Please Enter"
-          style={styles.input}
+          editable={dropdownValue ? true : false}
+          placeholder='Search here..'
+          placeholderTextColor={'grey'}
           value={searchText}
-          onChangeText={setSearchText}
+          maxLength={dropdownValue == 'mobile' ? 10 : 50}
+          keyboardType={dropdownValue == 'mobile' ? 'number-pad' : 'default'}
+          onChangeText={handleSearchInput}
+          style={{ borderWidth: 1, borderColor: '#ccc', backgroundColor: dropdownValue ? '#fff' : '#f0f0f0', borderRadius: 6, marginVertical: 14, height: 50, paddingLeft: 10 }}
         />
-      </View>
 
-      <View style={styles.row}>
-        <Text>From:</Text>
-        <TouchableOpacity
-          style={styles.datePicker}
-          onPress={() => setShowFromPicker(true)}
-        >
-          <Text> {formatDate(new Date())}</Text>
-        </TouchableOpacity>
-        <Text>To:</Text>
-        <TouchableOpacity
-          style={styles.datePicker}
-          onPress={() => setShowToPicker(true)}
-        >
-          <Text>{formatDate(new Date())}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.searchBtn}>
-          <Text style={{ color: '#fff', fontWeight: 'bold' }}>🔍</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={{ flexDirection: 'row', flex:0, marginBottom: 16, paddingHorizontal: 6, alignItems: 'center',}}>
 
-      {showFromPicker && (
-        <DateTimePicker
-          value={fromDate || new Date()}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            setShowFromPicker(false);
-            if (selectedDate) setFromDate(selectedDate);
-          }}
-        />
-      )}
-      {showToPicker && (
-        <DateTimePicker
-          value={toDate || new Date()}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            setShowToPicker(false);
-            if (selectedDate) setToDate(selectedDate);
-          }}
-        />
-      )}
-
-      <FlatList
-        data={sectionData}
-        horizontal
-        pagingEnabled
-        keyExtractor={(item) => item.title}
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>{item.title}</Text>
-            {item.data.map((d, i) => {
-              if (d == "View Docs") {
-                return <Text key={i} style={[{ backgroundColor: 'darkblue', color: 'white' }, styles.itemText]}>{d}</Text>
-              }
-              return <Text key={i} style={styles.itemText}>{d.toUpperCase()}</Text>
-            }
-            )}
+          <View style ={{flexDirection: 'row', flex: 0.9}}>
+          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={{ fontWeight: '400', fontSize: 16, color: 'gray' }}>From:</Text>
+            <TextInput
+              style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 5, height: 40, width: 100, marginHorizontal: 4, paddingHorizontal: 8 }}
+              placeholderTextColor={"black"}
+              placeholder='dd-mm-yyyy'
+              value={fromDate}
+              onPress={showFromPicker}
+              onFocus={() => { Keyboard.dismiss() }}
+            />
+            <DateTimePickerModal
+            isVisible={isFromPickerVisible}
+            mode='date'
+            onConfirm={handleFromPickerConfirm}
+            onCancel={hideFromPicker}
+            maximumDate={new Date()}
+            />
           </View>
-        )}
-      />
-    </View>
+
+          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={{ fontWeight: '400', fontSize: 16, color: 'gray' }}>To:</Text>
+            <TextInput
+              style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 5, height: 40, width: 100, marginHorizontal: 4, paddingHorizontal: 8, backgroundColor: fromDate ? '#fff' : '#f0f0f0' }}
+              placeholderTextColor={"black"}
+              placeholder='dd-mm-yyyy'
+              value={toDate}
+              onPress={fromDate ? showToPicker : () => {}}
+              onFocus={() => { Keyboard.dismiss() }}
+              editable={fromDate ? true : false}
+            />
+            <DateTimePickerModal
+            isVisible={isToPickerVisible}
+            mode='date'
+            onConfirm={handleToPickerConfirm}
+            onCancel={hideToPicker}
+            />
+          </View>
+
+          </View>
+
+          <View style={{flex:0.1}}>
+            <TouchableOpacity style={{height: 38, width: 42, borderRadius: 4, justifyContent: 'center', alignItems: 'center', backgroundColor: '#0b4b85'}} onPress={handleFromToSearch}>
+            <Text style={{ color: '#fff', fontWeight: 'bold' }}>🔍</Text>
+            </TouchableOpacity>
+          </View>
+
+        </View>
+
+        <ScrollView showsVerticalScrollIndicator={false} style={{flex:1, borderRadius: 2}}>
+          <ScrollView horizontal style={{ flex:1 }}>
+            <View>
+              <View style={{ flexDirection: 'row' }}>
+                <T style={styles.headerCell}>Driver Name</T>
+                <T style={styles.headerCell}>Mobile Number</T>
+                <T style={styles.headerCell}>License Number</T>
+                <T style={styles.headerCell}>License Expiry Date</T>
+                <T style={styles.headerCell}>License Upload</T>
+                <T style={styles.headerCell}>Aadhar Upload</T>
+                <T style={styles.headerCell}>Action</T>
+              </View>
+
+              {filteredData.length > 0 ? filteredData.map((item, index) =>
+                <View key={index} style={{ flexDirection: 'row' }}>
+                  <T style={styles.cell}>{item.driverName}</T>
+                  <T style={styles.cell}>{item.mobileNumber}</T>
+                  <T style={styles.cell}>{item.licenseNumber}</T>
+                  <T style={styles.cell}>{item.licenseExpiry}</T>
+                  <T style={styles.cell}>{item.licenseUpload}</T>
+                  <T style={styles.cell}>{item.aadharUpload}</T>
+                  <T onPress={() => alert("Coming Soon!")} style={[styles.cell, {color: 'skyblue'}]}>{"View Docs"}</T>
+                </View>
+              ): <Text style={{fontSize:18, marginLeft:4}}>No Records Found.</Text>}
+            </View>
+          </ScrollView>
+        </ScrollView>
+      </View>
+    </PaperProvider>
   );
 };
 
@@ -145,67 +317,27 @@ export default TabTwoScreen;
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#fff',
     flex: 1,
     marginTop: 50
   },
-  row: {
-    flexDirection: 'row',
-    marginBottom: 12,
-    alignItems: 'center',
-  },
-  dropdown: {
+  headerCell: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
-    marginRight: 8,
-    backgroundColor: '#fff',
-    overflow: 'hidden',
-  },
-  input: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
     padding: 10,
-    backgroundColor: '#fff',
-  },
-  datePicker: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
-    padding: 10,
-    marginRight: 8,
-    backgroundColor: '#fff',
-  },
-  searchBtn: {
-    backgroundColor: '#007bff',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 6,
-  },
-  sectionContainer: {
-    flex: 1,
-    height: 40,
-    justifyContent: 'flex-start',
-    textAlign: 'center',
-  },
-  sectionTitle: {
-    height: 40,
-    textAlign: 'center',
-    fontSize: 20,
     fontWeight: 'bold',
-    backgroundColor: '#0b4b85',
-    paddingVertical: 5,
     borderWidth: 1,
-    color: 'white'
+    borderColor: '#ccc',
+    textAlign: 'center',
+    backgroundColor: 'darkblue',
+    color: '#fff',
+    width: 110,
   },
-  itemText: {
-    height: 40,
-    fontSize: 18,
-    paddingVertical: 4,
+  cell: {
+    flex: 1,
+    padding: 10,
     borderWidth: 1,
+    borderColor: '#ccc',
+    textAlign: 'center',
+    width: 110,
   },
-})
+});

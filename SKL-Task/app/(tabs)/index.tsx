@@ -188,7 +188,11 @@ export default function HomeScreen() {
             <Pressable onPress={pickLicenseFile}>
               <Text style={{ borderWidth: 1, height: 35, fontWeight: '700', paddingRight: 10, backgroundColor: 'lightgrey', paddingVertical: 5, paddingLeft: 2, marginVertical: 2 }}>Choose File</Text>
             </Pressable>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+
             <Text style={{ marginLeft: 10, alignSelf: 'center' }}>{licenseFile}</Text>
+            </ScrollView>
+
             {licenseFile != "No File Chosen" && <TouchableOpacity onPress={() => setLicenseFile('No File Chosen')}><Text style={{ color: 'red', marginLeft: 10, marginVertical: 10 }}>✕</Text></TouchableOpacity>}
           </View>
 
@@ -197,7 +201,9 @@ export default function HomeScreen() {
             <Pressable onPress={pickAadharFile}>
               <Text style={{ borderWidth: 1, height: 35, fontWeight: '700', paddingRight: 10, backgroundColor: 'lightgrey', paddingVertical: 5, paddingLeft: 2, marginVertical: 2 }}>Choose File</Text>
             </Pressable>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <Text style={{ marginLeft: 10, alignSelf: 'center' }}>{aadharFile}</Text>
+            </ScrollView>
             {aadharFile != "No File Chosen" && <TouchableOpacity onPress={() => setAadharFile('No File Chosen')}><Text style={{ color: 'red', marginLeft: 10, marginVertical: 10 }}>✕</Text></TouchableOpacity>}
           </View>
 
